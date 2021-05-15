@@ -8,15 +8,23 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow'
 import Avatar from '@material-ui/core/Avatar';
 import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 
 import {TCoin} from '../../types';
 
 type ICryptoTable = {
-    items: TCoin[];
+    coins: TCoin[];
     classes: any;
+    loading: boolean;
+    setPrice: (coin: TCoin)=>(void);
 }
 
-const CryptoTable:React.FC<ICryptoTable> = ({items, classes}) =>{
+const CryptoTable:React.FC<ICryptoTable> = ({coins, loading, classes, setPrice}) =>{
+
+  const onClickPrice = (coin: TCoin) => {
+    setPrice(coin);
+  }
+
     return (
         <>
         <Paper elevation={3} className={classes.paper}>
@@ -24,7 +32,7 @@ const CryptoTable:React.FC<ICryptoTable> = ({items, classes}) =>{
               <Table aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell></TableCell>
+                  <TableCell align="left"></TableCell>
                     <TableCell align="left">Name</TableCell>
                     <TableCell align="left">FullName</TableCell>
                     <TableCell align="left">Price</TableCell>
@@ -32,10 +40,10 @@ const CryptoTable:React.FC<ICryptoTable> = ({items, classes}) =>{
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {!items.length 
-                    ? 'Загрузка...' 
-                    : items.map((coin) => (
-                    <TableRow key={coin.name}>
+                  {!loading 
+                  ?
+                    coins.map((coin, id) => (
+                    <TableRow key={`${coin.name}`+`${id}`} className={classes.tableRow} onClick={()=>onClickPrice(coin)} >
                       <TableCell component="th" scope="coin">
                         <Avatar src={coin.imageUrl} alt='Coin icon' />
                       </TableCell>
@@ -44,7 +52,14 @@ const CryptoTable:React.FC<ICryptoTable> = ({items, classes}) =>{
                       <TableCell align="left">${coin.price}</TableCell>
                       <TableCell align="left">${coin.volume24hour}</TableCell>
                     </TableRow>
-                  ))}
+                    ))
+                    :
+                      (<TableRow >
+                        <TableCell component="th" scope="coin">
+                          Загрузка коинов
+                        </TableCell>
+                      </TableRow>)
+                  }
                 </TableBody>
               </Table>
             </TableContainer>
