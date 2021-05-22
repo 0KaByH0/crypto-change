@@ -4,16 +4,20 @@ export type TCoin = {
     imageUrl: string;
     price: number;
     volume24hour: number; 
+   //diff: number
   }
 
 export type CryptoState = {
     allCoins: TCoin[]
     loading: boolean,
+
+    allCoinsOldPrice: number[],
+    diff: number[],
   }
   
 export type CryptoAction = {
     type: string
-    payload: TCoin[]
+    payload: any[]
   }
   
 export type DispatchType = (args: CryptoAction) => CryptoAction

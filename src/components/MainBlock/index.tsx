@@ -12,18 +12,13 @@ type MainBlockType = {
 };
 
 const MainBlock: React.FC<MainBlockType> = ({ classes }) => {
-  const { allCoins, loading } = useSelector((state: CryptoState) => state);
-  //console.log(state.loading, state.allCoins[0]);
+  const { allCoins, loading, diff } = useSelector((state: CryptoState) => state);
 
   const [userCoin, setUserCoin] = React.useState<TCoin>({ ...allCoins[0] });
 
-  //console.log(state.loading, state.allCoins[0], userCoin)
-
   React.useEffect(() => {
-    if (allCoins[0] !== undefined) {
-      setUserCoin({ ...userCoin, ...allCoins[0] });
-    }
-  }, [loading]);
+    setUserCoin({ ...userCoin, ...allCoins[0] });
+  }, []);
 
   const setPrice = (coin: TCoin): void => {
     if (coin !== undefined) {
@@ -38,7 +33,13 @@ const MainBlock: React.FC<MainBlockType> = ({ classes }) => {
           <ConvertBlock classes={classes} coins={allCoins} loading={loading} userCoin={userCoin} />
         </Grid>
         <Grid item xs={10} sm={10} md={10} lg={8}>
-          <CryptoTable classes={classes} coins={allCoins} loading={loading} setPrice={setPrice} />
+          <CryptoTable
+            classes={classes}
+            coins={allCoins}
+            loading={loading}
+            setPrice={setPrice}
+            diff={diff}
+          />
         </Grid>
       </Grid>
     </>

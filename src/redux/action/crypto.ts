@@ -9,6 +9,19 @@ const fetchCrypto = (payload: TCoin[])=> {
     }
 }
 
+export const comparePrices = (payload: number[])=>{
+    return {    
+        type: "COMPARE_PRICES",
+        payload 
+    }
+}
+
+export const getOldPrices = ()=>{
+    return {    
+        type: "GET_OLD_PRICE",
+    }
+}
+
 const setLoading = ()=> {
     return {    
         type: "SET_LOADING",
@@ -31,6 +44,7 @@ export const fetchCryptoAsync = ()=> {
                 }
                 return obj
             });
+            dispatch(comparePrices(coins.map(i=>i.price)))
             dispatch(fetchCrypto(coins));
         })
     }

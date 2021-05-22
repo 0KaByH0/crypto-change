@@ -17,13 +17,13 @@ type IConvertBlock = {
 };
 
 const ConvertBlock: React.FC<IConvertBlock> = ({ classes, coins, userCoin, loading }) => {
-  const [firstCoinPrice, setFirstCoinPrice] = React.useState<number | string>(
+  const [firstAmountCoin, setFirstAmountCoin] = React.useState<number | string>(
     coins[0] !== undefined ? coins[0].price : '',
   );
   const [firstCoinName, setFirstCoinName] = React.useState<string>(
     coins[0] !== undefined ? coins[0].name : '',
   );
-  const [secondCoinPrice, setSecondCoinPrice] = React.useState<number | string>(
+  const [secondAmountCoin, setSecondAmountCoin] = React.useState<number | string>(
     coins[1] !== undefined ? coins[1].price : '',
   );
   const [secondCoinName, setSecondCoinName] = React.useState<string>(
@@ -31,48 +31,68 @@ const ConvertBlock: React.FC<IConvertBlock> = ({ classes, coins, userCoin, loadi
   );
 
   const nodeRef = React.useRef<HTMLDivElement>(null);
+  let coinPrice = (name: string) => coins.find((coin) => coin.name === name)?.price!;
 
   React.useEffect(() => {
+    setFirstAmountCoin(userCoin.price);
+    setFirstCoinName(userCoin.name);
+    newSecAmount(userCoin.price, 1, coinPrice(secondCoinName));
+
     if (userCoin.name === secondCoinName) {
       setSecondCoinName('');
-      setSecondCoinPrice(0);
+      setSecondAmountCoin(0);
     }
-    setFirstCoinPrice(userCoin.price);
-    setFirstCoinName(userCoin.name);
   }, [userCoin]);
 
-  const onFirstCoinPriceChange = (val: number): void => {
-    setFirstCoinPrice(val);
-  };
   //react synthetic target event
   const onFirstCoinNameChange = (e: any): void => {
     if (nodeRef && nodeRef.current) {
       nodeRef.current.focus();
-      console.log(nodeRef.current);
     }
+    setFirstCoinName(e.target.value);
+    setFirstAmountCoin(coinPrice(e.target.value));
+    newSecAmount(1, coinPrice(e.target.value), coinPrice(secondCoinName));
     if (e.target.value === secondCoinName) {
       setSecondCoinName('');
-      setSecondCoinPrice(0);
+      setSecondAmountCoin(0);
     }
+  };
 
-    setFirstCoinName(e.target.value);
-    setFirstCoinPrice(coins.find((coin) => coin.name === e.target.value)?.price!);
+  const onFirstAmountCoinChange = (val: number): void => {
+    console.log(val);
+    setFirstAmountCoin(val);
+    newSecAmount(val, coinPrice(firstCoinName), coinPrice(secondCoinName));
   };
 
   const onSecondCoinNameChange = (e: any): void => {
+    setSecondCoinName(e.target.value);
+    newSecAmount(firstAmountCoin, coinPrice(firstCoinName), coinPrice(e.target.value));
     if (e.target.value === firstCoinName) {
       setFirstCoinName('');
-      setFirstCoinPrice(0);
+      setFirstAmountCoin(0);
     }
-    setSecondCoinName(e.target.value);
-    setSecondCoinPrice(coins.find((coin) => coin.name === e.target.value)?.price!);
   };
 
-  const onSecondCoinPriceChange = (val: number): void => {
-    setSecondCoinPrice(val);
+  const onSecondAmountCoinChange = (val: number): void => {
+    setSecondAmountCoin(val);
+    newFirstAmount(val, coinPrice(firstCoinName), coinPrice(secondCoinName));
   };
 
-  console.log(userCoin.price, firstCoinPrice);
+  ////////////////////////////////////////////CONVERTING//////////////////
+  const newFirstAmount = (secVal: number | string, firstPrice: number, secPrice: number) => {
+    let newAmount: number = (Number(secVal) * Number(secPrice)) / Number(firstPrice);
+    //console.log(firstAmountCoin, firstPrice, secPrice, val, newPrice);
+    setFirstAmountCoin(newAmount);
+  };
+
+  const newSecAmount = (val: number | string, firstPrice: number, secPrice: number) => {
+    let newAmount: number = (Number(val) * Number(firstPrice)) / Number(secPrice);
+    console.log(firstAmountCoin, firstPrice, secPrice, val, newAmount);
+    setSecondAmountCoin(newAmount);
+  };
+
+  //console.log(userCoin.price, firstAmountCoin);
+  //console.log(userCoin.price, secondAmountCoin);
   return (
     <>
       <Paper elevation={3} className={classes.paper}>
@@ -81,8 +101,8 @@ const ConvertBlock: React.FC<IConvertBlock> = ({ classes, coins, userCoin, loadi
             <TextField
               label="Сумма"
               variant="outlined"
-              value={firstCoinPrice || ''}
-              onChange={(e) => onFirstCoinPriceChange(Number(e.target.value))}
+              value={firstAmountCoin || ''}
+              onChange={(e) => onFirstAmountCoinChange(Number(e.target.value))}
             />
           </FormControl>
           <FormControl variant="outlined" style={{ minWidth: 100 }}>
@@ -106,8 +126,8 @@ const ConvertBlock: React.FC<IConvertBlock> = ({ classes, coins, userCoin, loadi
             <TextField
               variant="outlined"
               label="Сумма"
-              value={secondCoinPrice || ''}
-              onChange={(e) => onSecondCoinPriceChange(Number(e.target.value))}
+              value={secondAmountCoin || ''}
+              onChange={(e) => onSecondAmountCoinChange(Number(e.target.value))}
             />
           </FormControl>
           <FormControl variant="outlined" style={{ minWidth: 100 }}>
@@ -130,4 +150,4 @@ const ConvertBlock: React.FC<IConvertBlock> = ({ classes, coins, userCoin, loadi
   );
 };
 
-export default ConvertBlock;
+export default React.memo(ConvertBlock);

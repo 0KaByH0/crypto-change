@@ -26,9 +26,38 @@ export const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
       },
     },
-
     tableRow:{
-      cursor: 'pointer'
+      cursor: 'pointer',
+    },
+
+    // priceBlock:{
+    //   background: '#96969670',
+    //   transition: 'background 4s linear',
+    //   // '&:priceUp':{
+    //   //   background: '#00800075', 
+    //   //   transition: 'background 4s linear',
+    //   // },
+    //   // '::priceDown':{
+    //   //   background: '#ff00007a',
+    //   // },
+    //   '&:hover':{
+    //     background: '#00800075', 
+    //     transition: 'background 1s linear',
+    //   },
+    //   priceUp:{
+    //       background: '#00800075', 
+    //       //background: '#00800075',
+    //       //transition: '1s';
+    //       transition: 'background 1s linear',
+    //   },
+    // }
+    priceUp:{
+      background: '#00800075',
+      //transition: 'background 4s linear',
+    },
+    priceDown:{
+      background: '#ff00005c',
+      //transition: 'background 0.5s ease',
     }
   }));
   
